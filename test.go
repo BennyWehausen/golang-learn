@@ -5,10 +5,13 @@ import "fmt"
 func main() {
 	//fmt.Println("Hello, World!")
 	// 测试用例
-	testCases := []int{4, 1, 2, 1, 2}
-	// 运行测试用例
-	result := singleNumber(testCases)
-	fmt.Printf("测试结果： %d\n", result)
+	// testCases := []int{4, 1, 2, 1, 2}
+	// // 运行测试用例
+	// result := singleNumber(testCases)
+	// fmt.Printf("测试结果： %d\n", result)
+
+	res := palindrome(122)
+	fmt.Println("palindromec返回的结果： %d\n", res)
 }
 
 /**
@@ -32,4 +35,21 @@ func singleNumber(nums []int) int {
 	}
 	// 如果没有找到只出现一次的元素（实际上根据题目描述这种情况不会发生）
 	return -1
+}
+
+// 任务2-判断回文数
+func palindrome(num int) bool {
+	if num < 0 {
+		return false
+	}
+	// 反转整数
+	reversedNum := 0
+	originalNum := num
+	for num > 0 {
+		digit := num % 10
+		reversedNum = reversedNum*10 + digit
+		num /= 10
+	}
+	// 比较反转前后的整数是否相等
+	return originalNum == reversedNum
 }
