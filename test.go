@@ -10,8 +10,11 @@ func main() {
 	// result := singleNumber(testCases)
 	// fmt.Printf("测试结果： %d\n", result)
 
-	res := palindrome(122)
-	fmt.Println("palindromec返回的结果： %d\n", res)
+	//res := palindrome(121)
+	//fmt.Println("palindromec返回的结果： %d\n", res)
+	s := "()[]{}"
+	res := validParentheses(s)
+	fmt.Println("ValidParentheses返回的结果： %d\n", res)
 }
 
 /**
@@ -37,9 +40,10 @@ func singleNumber(nums []int) int {
 	return -1
 }
 
-// 任务2-判断回文数
+// 任务1-判断回文数
 func palindrome(num int) bool {
-	if num < 0 {
+	// 排除负数和以0结尾的非零数
+	if num < 0 || num%10 == 0 && num != 0 {
 		return false
 	}
 	// 反转整数
@@ -48,8 +52,32 @@ func palindrome(num int) bool {
 	for num > 0 {
 		digit := num % 10
 		reversedNum = reversedNum*10 + digit
-		num /= 10
+		num = num / 10
 	}
 	// 比较反转前后的整数是否相等
 	return originalNum == reversedNum
+}
+
+// 任务1-判断该字符串是否是有效括号字符串
+func validParentheses(s string) bool {
+	stack := []rune{}
+	pairs := map[rune]rune{
+		'(': ')',
+		'{': '}',
+		'[': ']'}
+	for _, char := range s {
+		if char == '(' || char == '{' || char == '[' {
+			stack = append(stack, char)
+		} else {
+			if len(stack) == 0 {
+				return false
+			}
+			top := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			if pairs[top] != char {
+				return false
+			}
+		}
+	}
+	return len(stack) == 0
 }
