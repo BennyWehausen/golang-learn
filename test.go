@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -14,22 +15,34 @@ func main() {
 	// fmt.Printf("测试结果： %d\n", result)
 
 	//res := palindrome(121)
-	//fmt.Println("palindromec返回的结果： %d\n", res)
+	//fmt.Printf("palindromec返回的结果： %d\n", res)
 	//s := "()[]{}"
 	//res := validParentheses(s)
-	//fmt.Println("ValidParentheses返回的结果： %d\n", res)
+	//fmt.Printf("ValidParentheses返回的结果： %d\n", res)
 
 	//var s = [3]string{"flower", "flow", "flight"}
 	//res := longestCommonPrefix(s)
-	//fmt.Println("ValidParentheses返回的结果： %d\n", res)
+	//fmt.Printf("longestCommonPrefix返回的结果： %d\n", res)
 
 	//var s = []int{1, 2, 3}
 	//res := plusOne(s)
-	//fmt.Println("ValidParentheses返回的结果： %d\n", res)
-	var s2 = []int{1, 2, 9}
-	res2 := plusOne(s2)
+	//fmt.Printf("plusOne返回的结果： %d\n", res)
+	//var s2 = []int{1, 2, 9}
+	//res2 := plusOne(s2)
+	//fmt.Printf("plusOne返回的结果2： %d\n", res2)
 
-	fmt.Println("ValidParentheses返回的结果2： %d\n", res2)
+	//var s2 = []int{1, 1, 2, 2, 9}
+	//res2 := removeDuplicates(s2)
+	//fmt.Printf("removeDuplicates返回的结果2： %d\n, array: %v \n", res2, s2[:res2])
+
+	//var arr = [][]int{{1, 4}, {4, 5}}
+	//res2 := merge(arr)
+	//fmt.Printf("removeDuplicates返回的结果2： %d\n, array: %v \n", res2, arr)
+
+	nums := []int{7, 11, 2, 15}
+	target := 9
+	result := twoSum(nums, target)
+	fmt.Printf("Input: nums=%v, target=%d -> Output: %v\n,result:%v和%v", nums, target, result, nums[result[0]], nums[result[1]])
 }
 
 /**
@@ -132,4 +145,59 @@ func plusOne(digits []int) []int {
 	}
 	// 如果遍历完数组后，所有元素都等于9，则在数组开头添加一个1
 	return append([]int{1}, digits...)
+}
+
+// 任务1-删除有序数组中的重复项
+func removeDuplicates(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	i := 0
+	for j := 1; j < len(nums); j++ {
+		if nums[i] != nums[j] {
+			i++
+			nums[i] = nums[j]
+		}
+	}
+	return i + 1
+}
+
+// 任务1-合并区间
+func merge(intervals [][]int) [][]int {
+	if len(intervals) == 0 {
+		return [][]int{}
+	}
+	// 按照区间起始位置排序
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	merged := [][]int{intervals[0]}
+	for i := 1; i < len(intervals); i++ {
+		// 如果当前区间与上一个区间不重合，直接添加
+		if merged[len(merged)-1][1] < intervals[i][0] {
+			merged = append(merged, intervals[i])
+		} else {
+			// 否则的话，我们就可以与上一个区间进行合并
+			merged[len(merged)-1][1] = max(merged[len(merged)-1][1], intervals[i][1])
+		}
+	}
+	return merged
+}
+
+// 任务1-两数之和
+func twoSum(nums []int, target int) []int {
+	// 创建一个map来存储数值和对应的索引
+	numMap := make(map[int]int)
+	for i, num := range nums {
+		// 计算需要的补数
+		complement := target - num
+		// 检查补数是否在map中
+		if index, ok := numMap[complement]; ok {
+			return []int{index, i}
+		}
+		// 将当前数值和索引存入map
+		numMap[num] = i
+	}
+	// 如果没有找到解（根据题目描述这种情况不会发生）
+	return nil
 }
