@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 	//fmt.Println("Hello, World!")
@@ -12,9 +15,21 @@ func main() {
 
 	//res := palindrome(121)
 	//fmt.Println("palindromec返回的结果： %d\n", res)
-	s := "()[]{}"
-	res := validParentheses(s)
-	fmt.Println("ValidParentheses返回的结果： %d\n", res)
+	//s := "()[]{}"
+	//res := validParentheses(s)
+	//fmt.Println("ValidParentheses返回的结果： %d\n", res)
+
+	//var s = [3]string{"flower", "flow", "flight"}
+	//res := longestCommonPrefix(s)
+	//fmt.Println("ValidParentheses返回的结果： %d\n", res)
+
+	//var s = []int{1, 2, 3}
+	//res := plusOne(s)
+	//fmt.Println("ValidParentheses返回的结果： %d\n", res)
+	var s2 = []int{1, 2, 9}
+	res2 := plusOne(s2)
+
+	fmt.Println("ValidParentheses返回的结果2： %d\n", res2)
 }
 
 /**
@@ -80,4 +95,41 @@ func validParentheses(s string) bool {
 		}
 	}
 	return len(stack) == 0
+}
+
+// 任务1-查找字符串数组中的最长公共前缀
+func longestCommonPrefix(strs [3]string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+	prefix := strs[0]
+	for i := 1; i < len(strs); i++ {
+		//检查字符串是否以指定前缀开头
+		s := strs[i]
+		for !strings.HasPrefix(s, prefix) {
+			//通过 prefix[:len(prefix)-1] 逐步减少前缀长度，直到匹配或为空。
+			prefix = prefix[:len(prefix)-1]
+			if prefix == "" {
+				return ""
+			}
+		}
+	}
+	return prefix
+}
+
+// 任务1-题目：给定一个由整数组成的非空数组所表示的非负整数，在该数的基础上加一
+func plusOne(digits []int) []int {
+	n := len(digits)
+	// 从数组的最后一个元素开始向前遍历
+	for i := n - 1; i >= 0; i-- {
+		// 如果当前元素小于9，则将其加1，然后返回
+		if digits[i] < 9 {
+			digits[i]++
+			return digits
+		}
+		// 如果当前元素等于9，则将其置为0
+		digits[i] = 0
+	}
+	// 如果遍历完数组后，所有元素都等于9，则在数组开头添加一个1
+	return append([]int{1}, digits...)
 }
