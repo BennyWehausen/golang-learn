@@ -3,9 +3,31 @@ package main
 import (
 	"fmt"
 	"golang-learn/task1"
+	"golang-learn/task2"
 )
 
 func main() {
+	//testTask1()
+	testTask2()
+}
+
+func testTask2() {
+	//task2.Test()
+	/*	var num int = 5
+		fmt.Println("原始值:", num) // 输出原始值
+		//rs := task2.AddTen2(num)
+		//fmt.Println("修改后的值2:", num, rs)
+		// 传递变量的地址给函数
+		task2.AddTen(&num)
+		fmt.Println("修改后的值:", num)*/
+	nums := []int{1, 2, 3}
+	fmt.Println("原始切片:", nums)
+	// 调用函数，传递切片的指针
+	task2.DoubleSlice(&nums)
+	fmt.Println("修改后的切片:", nums)
+}
+
+func testTask1() {
 	//fmt.Println("Hello, World!")
 	// 测试用例
 	// testCases := []int{4, 1, 2, 1, 2}
