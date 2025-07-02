@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang-learn/task1"
 	"golang-learn/task2"
+	"time"
 )
 
 func main() {
@@ -20,13 +21,39 @@ func testTask2() {
 		// 传递变量的地址给函数
 		task2.AddTen(&num)
 		fmt.Println("修改后的值:", num)*/
-	nums := []int{1, 2, 3}
-	fmt.Println("原始切片:", nums)
-	// 调用函数，传递切片的指针
-	task2.DoubleSlice(&nums)
-	fmt.Println("修改后的切片:", nums)
+	//nums := []int{1, 2, 3}
+	//fmt.Println("原始切片:", nums)
+	//// 调用函数，传递切片的指针
+	//task2.DoubleSlice(&nums)
+	//fmt.Println("修改后的切片:", nums)
+	//testGoFunc()
+	testGoroutine()
 }
 
+// 同时启动两个goroutine来打印奇数和偶数，然后主程序等待一段时间以确保输出完成。
+func testGoFunc() {
+	go task2.PrintOdd()
+	go task2.PrintEven()
+	time.Sleep(1 * time.Second)
+}
+
+/*同步多个 Goroutine*/
+func testGoroutine() {
+	//common.Wg.Add(2)
+	//// 启动 Goroutine
+	//go task2.PrintOdd2()
+	//go task2.PrintEven2()
+	//// 等待所有 Goroutine 完成
+	//common.Wg.Wait()
+
+	// 定义任务列表
+	tasks := []func(){
+		task2.PrintOdd,
+		task2.PrintEven,
+	}
+	// 调度任务
+	task2.ScheduleTasks(tasks)
+}
 func testTask1() {
 	//fmt.Println("Hello, World!")
 	// 测试用例
