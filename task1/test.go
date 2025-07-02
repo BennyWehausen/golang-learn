@@ -1,49 +1,9 @@
-package main
+package task1
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 )
-
-func main() {
-	//fmt.Println("Hello, World!")
-	// 测试用例
-	// testCases := []int{4, 1, 2, 1, 2}
-	// // 运行测试用例
-	// result := singleNumber(testCases)
-	// fmt.Printf("测试结果： %d\n", result)
-
-	//res := palindrome(121)
-	//fmt.Printf("palindromec返回的结果： %d\n", res)
-	//s := "()[]{}"
-	//res := validParentheses(s)
-	//fmt.Printf("ValidParentheses返回的结果： %d\n", res)
-
-	//var s = [3]string{"flower", "flow", "flight"}
-	//res := longestCommonPrefix(s)
-	//fmt.Printf("longestCommonPrefix返回的结果： %d\n", res)
-
-	//var s = []int{1, 2, 3}
-	//res := plusOne(s)
-	//fmt.Printf("plusOne返回的结果： %d\n", res)
-	//var s2 = []int{1, 2, 9}
-	//res2 := plusOne(s2)
-	//fmt.Printf("plusOne返回的结果2： %d\n", res2)
-
-	//var s2 = []int{1, 1, 2, 2, 9}
-	//res2 := removeDuplicates(s2)
-	//fmt.Printf("removeDuplicates返回的结果2： %d\n, array: %v \n", res2, s2[:res2])
-
-	//var arr = [][]int{{1, 4}, {4, 5}}
-	//res2 := merge(arr)
-	//fmt.Printf("removeDuplicates返回的结果2： %d\n, array: %v \n", res2, arr)
-
-	nums := []int{7, 11, 2, 15}
-	target := 9
-	result := twoSum(nums, target)
-	fmt.Printf("Input: nums=%v, target=%d -> Output: %v\n,result:%v和%v", nums, target, result, nums[result[0]], nums[result[1]])
-}
 
 /**
  * 任务1-梦的开始
@@ -51,7 +11,7 @@ func main() {
 //136. 只出现一次的数字：
 //给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。可以使用 for 循环遍历数组，
 //结合 if 条件判断和 map 数据结构来解决，例如通过 map 记录每个元素出现的次数，然后再遍历 map 找到出现次数为1的元素。
-func singleNumber(nums []int) int {
+func SingleNumber(nums []int) int {
 	// 创建一个map来记录每个数字出现的次数
 	numCount := make(map[int]int)
 	// 第一次遍历：统计每个数字出现的次数
@@ -69,7 +29,7 @@ func singleNumber(nums []int) int {
 }
 
 // 任务1-判断回文数
-func palindrome(num int) bool {
+func Palindrome(num int) bool {
 	// 排除负数和以0结尾的非零数
 	if num < 0 || num%10 == 0 && num != 0 {
 		return false
@@ -87,7 +47,7 @@ func palindrome(num int) bool {
 }
 
 // 任务1-判断该字符串是否是有效括号字符串
-func validParentheses(s string) bool {
+func ValidParentheses(s string) bool {
 	stack := []rune{}
 	pairs := map[rune]rune{
 		'(': ')',
@@ -111,7 +71,7 @@ func validParentheses(s string) bool {
 }
 
 // 任务1-查找字符串数组中的最长公共前缀
-func longestCommonPrefix(strs [3]string) string {
+func LongestCommonPrefix(strs [3]string) string {
 	if len(strs) == 0 {
 		return ""
 	}
@@ -131,7 +91,7 @@ func longestCommonPrefix(strs [3]string) string {
 }
 
 // 任务1-题目：给定一个由整数组成的非空数组所表示的非负整数，在该数的基础上加一
-func plusOne(digits []int) []int {
+func PlusOne(digits []int) []int {
 	n := len(digits)
 	// 从数组的最后一个元素开始向前遍历
 	for i := n - 1; i >= 0; i-- {
@@ -148,7 +108,7 @@ func plusOne(digits []int) []int {
 }
 
 // 任务1-删除有序数组中的重复项
-func removeDuplicates(nums []int) int {
+func RemoveDuplicates(nums []int) int {
 	if len(nums) == 0 {
 		return 0
 	}
@@ -163,7 +123,7 @@ func removeDuplicates(nums []int) int {
 }
 
 // 任务1-合并区间
-func merge(intervals [][]int) [][]int {
+func Merge(intervals [][]int) [][]int {
 	if len(intervals) == 0 {
 		return [][]int{}
 	}
@@ -185,7 +145,7 @@ func merge(intervals [][]int) [][]int {
 }
 
 // 任务1-两数之和
-func twoSum(nums []int, target int) []int {
+func TwoSum(nums []int, target int) []int {
 	// 创建一个map来存储数值和对应的索引
 	numMap := make(map[int]int)
 	for i, num := range nums {
