@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"golang-learn/common"
+	"golang-learn/dao"
 	"golang-learn/task1"
 	"golang-learn/task2"
+	"golang-learn/task3"
 	"strconv"
 	"sync"
 	"time"
@@ -26,7 +28,41 @@ func main() {
 	//channelValueTest()
 	/*锁机制 work */
 	//safeCounterTest()
-	task2.SafeCounterAtomic()
+	//task2.SafeCounterAtomic()
+	sqlxTest()
+}
+
+func sqlxTest() {
+
+	// 查询1: 获取技术部所有员工
+	techEmployees, err := task3.GetEmployeesByDepartment(dao.DB, "技术部")
+	if err != nil {
+		fmt.Printf("查询技术部员工失败: %v", err)
+	} else {
+		fmt.Println("技术部员工:")
+		for _, emp := range techEmployees {
+			fmt.Printf("ID:%d Name:%s Salary:%.2f\n", emp.ID, emp.Name, emp.Salary)
+		}
+	}
+	//查询工资最高的员工信息
+	employeeInfo := task3.EmployeeInfo{}
+	employeeInfo, _ = task3.GetHighestPaidEmployee(dao.DB)
+	// 打印结果
+	fmt.Printf("最高工资员工: ID: %d, Name: %s, Department: %s, Salary: %.2f\n",
+		employeeInfo.ID, employeeInfo.Name, employeeInfo.Department, employeeInfo.Salary)
+	defer dao.DB.Close()
+
+	// 查询价格大于50的书籍
+	books, err := task3.QueryExpensiveBooks(dao.DB, 50)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("价格大于 50 元的书籍:")
+	// 打印结果
+	for _, book := range books {
+		fmt.Printf("%d: %s (%s) ￥%.2f\n",
+			book.ID, book.Title, book.Author, book.Price)
+	}
 }
 
 func safeCounterTest() {
