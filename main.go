@@ -7,6 +7,7 @@ import (
 	"golang-learn/task1"
 	"golang-learn/task2"
 	"golang-learn/task3"
+	"gorm.io/gorm"
 	"strconv"
 	"sync"
 	"time"
@@ -29,42 +30,113 @@ func main() {
 	/*锁机制 work */
 	//safeCounterTest()
 	//task2.SafeCounterAtomic()
-	sqlxTest()
+	//sqlxTest()
+	//modelSetTest()
+	//gormQueryTest(5)
+	hookFuncTest()
 }
 
-func sqlxTest() {
+func hookFuncTest() {
+	// 示例：创建一个用户
+	user := task3.User{Name: "mjz44", Email: "mjz44@example.com", Password: "123"}
+	dao.DB.Create(&user)
 
-	// 查询1: 获取技术部所有员工
-	techEmployees, err := task3.GetEmployeesByDepartment(dao.DB, "技术部")
-	if err != nil {
-		fmt.Printf("查询技术部员工失败: %v", err)
-	} else {
-		fmt.Println("技术部员工:")
-		for _, emp := range techEmployees {
-			fmt.Printf("ID:%d Name:%s Salary:%.2f\n", emp.ID, emp.Name, emp.Salary)
+	// 创建一篇文章
+	post := task3.Post{Title: "Hello World44", Content: "This is my first post44.", UserID: user.ID}
+	dao.DB.Create(&post)
+
+	// 创建两条评论
+	comment1 := task3.Comment{Content: "Great post44!", PostID: post.ID}
+	//comment2 := task3.Comment{Content: "Nice article33.", PostID: post.ID}
+	dao.DB.Create(&comment1)
+	//dao.DB.Create(&comment2)
+
+	// 删除其中一条评论
+	dao.DB.Delete(&comment1)
+
+	// 再次查询 post 查看评论状态是否变化
+	var p task3.Post
+	dao.DB.Preload("Comments").First(&p, post.ID)
+	fmt.Printf("Post Title: %s\n", p.Title)
+	fmt.Printf("Comment Status: %s\n", p.CommentStatus)
+}
+
+func gormQueryTest(userId uint) {
+	var user task3.User
+	dao.DB.Preload("Posts.Comments").First(&user, userId)
+	fmt.Printf("userId %v 用户发布的所有文章及其对应的评论信息", userId)
+	fmt.Printf("User: %s\n", user.Name)
+	for _, post := range user.Posts {
+		fmt.Printf("文章信息-Post: %s\n", post.Title)
+		for _, comment := range post.Comments {
+			fmt.Printf("评论信息-Comment: %s\n", comment.Content)
 		}
 	}
-	//查询工资最高的员工信息
-	employeeInfo := task3.EmployeeInfo{}
-	employeeInfo, _ = task3.GetHighestPaidEmployee(dao.DB)
-	// 打印结果
-	fmt.Printf("最高工资员工: ID: %d, Name: %s, Department: %s, Salary: %.2f\n",
-		employeeInfo.ID, employeeInfo.Name, employeeInfo.Department, employeeInfo.Salary)
-	defer dao.DB.Close()
-
-	// 查询价格大于50的书籍
-	books, err := task3.QueryExpensiveBooks(dao.DB, 50)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("价格大于 50 元的书籍:")
-	// 打印结果
-	for _, book := range books {
-		fmt.Printf("%d: %s (%s) ￥%.2f\n",
-			book.ID, book.Title, book.Author, book.Price)
-	}
+	getPostWithMostComments(dao.DB)
 }
 
+// 使用原生 SQL 查询评论最多的帖子
+func getPostWithMostComments(db *gorm.DB) {
+	type Result struct {
+		PostID   uint
+		Title    string
+		Comments int64
+	}
+
+	var result Result
+
+	// 查询并按评论数排序
+	db.Table("comments").
+		Select("posts.id as post_id, posts.title as title, COUNT(comments.id) as comments").
+		Joins("JOIN posts ON posts.id = comments.post_id").
+		Group("comments.post_id").
+		Order("comments DESC").
+		Limit(1).
+		Scan(&result)
+	fmt.Printf("评论数量最多的文章信息:")
+	fmt.Printf("Post with most comments:\n")
+	fmt.Printf("Title: %s\n", result.Title)
+	fmt.Printf("Total Comments: %d\n", result.Comments)
+}
+
+func modelSetTest() {
+	// 自动迁移模型，创建对应的数据库表
+	dao.DB.AutoMigrate(&task3.User{}, &task3.Post{}, &task3.Comment{})
+}
+
+/*
+	func sqlxTest() {
+		// 查询1: 获取技术部所有员工
+		techEmployees, err := task3.GetEmployeesByDepartment(dao.DB, "技术部")
+		if err != nil {
+			fmt.Printf("查询技术部员工失败: %v", err)
+		} else {
+			fmt.Println("技术部员工:")
+			for _, emp := range techEmployees {
+				fmt.Printf("ID:%d Name:%s Salary:%.2f\n", emp.ID, emp.Name, emp.Salary)
+			}
+		}
+		//查询工资最高的员工信息
+		employeeInfo := task3.EmployeeInfo{}
+		employeeInfo, _ = task3.GetHighestPaidEmployee(dao.DB)
+		// 打印结果
+		fmt.Printf("最高工资员工: ID: %d, Name: %s, Department: %s, Salary: %.2f\n",
+			employeeInfo.ID, employeeInfo.Name, employeeInfo.Department, employeeInfo.Salary)
+		defer dao.DB.Close()
+
+		// 查询价格大于50的书籍
+		books, err := task3.QueryExpensiveBooks(dao.DB, 50)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("价格大于 50 元的书籍:")
+		// 打印结果
+		for _, book := range books {
+			fmt.Printf("%d: %s (%s) ￥%.2f\n",
+				book.ID, book.Title, book.Author, book.Price)
+		}
+	}
+*/
 func safeCounterTest() {
 	// 创建带互斥锁的计数器
 	counter := task2.SafeCounter{}
